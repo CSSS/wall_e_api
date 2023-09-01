@@ -3,8 +3,7 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.views import View
-
-from WalleModels.models import UserPoint
+from wall_e_models.models import UserPoint
 
 
 class IndexPage(View):
