@@ -22,6 +22,7 @@ export basic_config__COMPOSE_PROJECT_NAME=PRODUCTION_MASTER;
 export basic_config__ENVIRONMENT=PROD;
 export COMPOSE_PROJECT_NAME=PRODUCTION_MASTER;
 
+export database_config__postgresSQL=1;
 export database_config__WALL_E_DB_DBNAME=csss_discord_db;
 export database_config__WALL_E_DB_USER=wall_e;
 export database_config__WALL_E_DB_PASSWORD=${WALL_E_DB_PASSWORD};

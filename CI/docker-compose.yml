@@ -13,10 +13,11 @@ services:  #Services that are needed for the wall_e app
         environment:
             - basic_config__ENVIRONMENT
             - basic_config__TOKEN
+            - basic_config__COMPOSE_PROJECT_NAME
             - database_config__WALL_E_DB_DBNAME
             - database_config__WALL_E_DB_USER
             - database_config__WALL_E_DB_PASSWORD
-            - basic_config__COMPOSE_PROJECT_NAME
+            - database_config__postgresSQL
         restart: unless-stopped
         networks:
             - wall_e_network
