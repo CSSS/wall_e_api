@@ -9,7 +9,7 @@ rm ${DISCORD_NOTIFICATION_MESSAGE_FILE} || true
 
 
 export prod_website_container_name="${COMPOSE_PROJECT_NAME}_leveling_website"
-export prod_website_image_name_lower_case=$(echo "{$prod_website_container_name}" | awk '{print tolower($0)}')
+export prod_website_image_name_lower_case=$(echo "${prod_website_container_name}" | awk '{print tolower($0)}')
 
 docker rm -f ${prod_website_container_name} || true
 docker image rm -f ${prod_website_image_name_lower_case} || true
