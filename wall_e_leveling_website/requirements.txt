@@ -14,3 +14,5 @@ psycopg2-binary
 
 # for getting usernames from discord
 requests
+
+wall-e-models==0.2
