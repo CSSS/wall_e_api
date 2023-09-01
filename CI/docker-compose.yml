@@ -4,10 +4,8 @@ version: '3' #docker-compose version
 services:  #Services that are needed for the wall_e app
     wall_e_leveling_website:
         build:
-            context: ../../../
-            dockerfile: CI/server_scripts/build_wall_e/Dockerfile.website
-        depends_on:
-            - 'db'
+            context: ../
+            dockerfile: CI/Dockerfile.website
         image: "${compose_project_name}_leveling_website"
         container_name: "${COMPOSE_PROJECT_NAME}_leveling_website"
         ports:
@@ -18,8 +16,6 @@ services:  #Services that are needed for the wall_e app
             - database_config__WALL_E_DB_USER
             - database_config__WALL_E_DB_PASSWORD
             - basic_config__COMPOSE_PROJECT_NAME
-            - DB_PORT
-            - HOST
         restart: unless-stopped
         networks:
             - wall_e_network
