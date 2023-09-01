@@ -19,7 +19,7 @@ pipeline {
                     sh('''
 export basic_config__TOKEN=${WALL_E_PROD_DISCORD_BOT_TOKEN};
 export basic_config__COMPOSE_PROJECT_NAME=PRODUCTION_MASTER;
-
+export basic_config__ENVIRONMENT=PROD;
 export COMPOSE_PROJECT_NAME=PRODUCTION_MASTER;
 
 export database_config__WALL_E_DB_DBNAME=csss_discord_db;

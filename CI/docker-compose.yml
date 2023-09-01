@@ -11,6 +11,7 @@ services:  #Services that are needed for the wall_e app
         ports:
             - "8081:8000"
         environment:
+            - basic_config__ENVIRONMENT
             - basic_config__TOKEN
             - database_config__WALL_E_DB_DBNAME
             - database_config__WALL_E_DB_USER
