@@ -25,9 +25,13 @@ SECRET_KEY = 'django-insecure-q*s8+g3-bron_o0w36j(u)7a1s+1ti@vt!=cdn5#ga-l$ca+o5
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['walle.sfucsss.org']
+ENVIRONMENT = os.environ['basic_config__ENVIRONMENT']
+POSTGRES_SQL = os.environ['database_config__postgresSQL'] == '1'
+if ENVIRONMENT == "LOCALHOST":
+    ALLOWED_HOSTS = ['127.0.0.1']
+else:
+    ALLOWED_HOSTS = ['walle.sfucsss.org']
 
-environment = "PRODUCTION"
 DISCORD_BOT_TOKEN = os.environ['basic_config__TOKEN']
 # Application definition
 
@@ -77,22 +81,33 @@ WSGI_APPLICATION = 'wall_e_leveling_website.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ["database_config__WALL_E_DB_DBNAME"],
-        'USER': os.environ["database_config__WALL_E_DB_USER"],
-        'PASSWORD': os.environ["database_config__WALL_E_DB_PASSWORD"]
+if POSTGRES_SQL:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.environ['database_config__WALL_E_DB_DBNAME'],
+            'USER': os.environ['database_config__WALL_E_DB_USER'],
+            'PASSWORD': os.environ['database_config__WALL_E_DB_PASSWORD']
+        }
     }
-}
 
-if environment == "LOCALHOST":
-    DATABASES['default']['PORT'] = os.environ["DB_PORT"]
-    DATABASES['default']['HOST'] = os.environ["HOST"]
+    if os.environ['basic_config__DOCKERIZED'] == '1':
+        DATABASES['default']['HOST'] = (
+            f"{os.environ['basic_config__COMPOSE_PROJECT_NAME']}_wall_e_db"
+        )
+    else:
+        DATABASES['default']['PORT'] = os.environ['database_config__DB_PORT']
+        DATABASES['default']['HOST'] = os.environ['database_config__HOST']
+
 else:
-    DATABASES['default']['HOST'] = (
-        f'{os.environ["basic_config__COMPOSE_PROJECT_NAME"]}_wall_e_db'
-    )
+    BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
+
 
 
 # Password validation
