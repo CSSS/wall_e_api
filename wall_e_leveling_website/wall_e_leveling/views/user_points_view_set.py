@@ -16,8 +16,8 @@ class StandardResultsSetPagination(PageNumberPagination):
     max_page_size = 1000
 
     def get_paginated_response(self, data):
-        next_link = self.get_next_link().replace(":443", "")
-        previous_link = self.get_previous_link().replace(":443", "")
+        next_link = self.get_next_link().replace(":443", "") if self.get_next_link() is not None else None
+        previous_link = self.get_previous_link().replace(":443", "") if self.get_previous_link() is not None else None
         return Response({
             'links': {
                'next': next_link,
