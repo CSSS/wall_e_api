@@ -5,6 +5,10 @@ from wall_e_models.models import UserPoint
 
 
 class UserPointSerializer(serializers.ModelSerializer):
+    username = serializers.SerializerMethodField("get_username")
+
+    def get_username(self, user):
+        return user.username
 
     class Meta:
         model = UserPoint
