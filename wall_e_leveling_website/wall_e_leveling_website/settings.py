@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'wall_e_leveling',
-    'wall_e_models'
+    'wall_e_models',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
