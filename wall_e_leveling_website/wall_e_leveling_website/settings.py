@@ -30,7 +30,7 @@ POSTGRES_SQL = os.environ['database_config__postgresSQL'] == '1'
 if ENVIRONMENT == "LOCALHOST":
     ALLOWED_HOSTS = ['127.0.0.1']
 else:
-    ALLOWED_HOSTS = ['walle.sfucsss.org']
+    ALLOWED_HOSTS = ['api.walle.sfucsss.org']
 
 DISCORD_BOT_TOKEN = os.environ['basic_config__TOKEN']
 # Application definition
