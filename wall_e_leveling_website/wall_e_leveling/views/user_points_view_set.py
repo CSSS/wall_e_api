@@ -6,12 +6,20 @@ from wall_e_leveling.views.pagination import StandardResultsSetPagination
 
 
 class UserPointSerializer(serializers.ModelSerializer):
-    username = serializers.SerializerMethodField("get_username")
+
+    name = serializers.SerializerMethodField('get_name')
+
+    avatar = serializers.SerializerMethodField('get_avatar')
 
     points_needed_to_level_up = serializers.SerializerMethodField('get_points_needed_to_level_up')
 
-    def get_username(self, user):
-        return user.username
+    def get_name(self, user):
+        if user.nickname is not None:
+            return user.nickname
+        return user.name
+
+    def get_avatar(self, user):
+        return user.leveling_message_avatar_url
 
     def get_points_needed_to_level_up(self, user):
         current_level = Level.objects.all().filter(
@@ -22,7 +30,7 @@ class UserPointSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserPoint
         fields = [
-            'username', 'points', 'level_number', 'message_count', 'level_up_specific_points',
+            'name', 'avatar', 'points', 'level_number', 'message_count', 'level_up_specific_points',
             'points_needed_to_level_up'
         ]
 

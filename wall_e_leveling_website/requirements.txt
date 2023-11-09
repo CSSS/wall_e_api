@@ -12,8 +12,5 @@ django-filter
 # needed for interacting with db
 psycopg2-binary
 
-# for getting usernames from discord
-requests
-
-wall-e-models==0.8
+wall-e-models==0.10
 python-dateutil
