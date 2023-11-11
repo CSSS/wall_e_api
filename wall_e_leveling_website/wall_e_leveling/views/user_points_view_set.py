@@ -37,7 +37,7 @@ class UserPointSerializer(serializers.ModelSerializer):
 
 class UserPointViewSet(viewsets.ModelViewSet):
     serializer_class = UserPointSerializer
-    queryset = UserPoint.objects.all().exclude(hidden=True)
+    queryset = UserPoint.objects.all().exclude(hidden=True).order_by('-points')
     pagination_class = StandardResultsSetPagination
 
     def create(self, request, *args, **kwargs):
