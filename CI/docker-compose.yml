@@ -18,7 +18,7 @@ services:  #Services that are needed for the wall_e app
             - database_config__WALL_E_DB_DBNAME
             - database_config__WALL_E_DB_USER
             - database_config__WALL_E_DB_PASSWORD
-            - database_config__postgresSQL
+            - database_config__TYPE
         restart: unless-stopped
         networks:
             - wall_e_network

@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-q*s8+g3-bron_o0w36j(u)7a1s+1ti@vt!=cdn5#ga-l$ca+o5
 DEBUG = True
 
 ENVIRONMENT = os.environ['basic_config__ENVIRONMENT']
-POSTGRES_SQL = os.environ['database_config__postgresSQL'] == '1'
+database_type = os.environ['database_config__TYPE']
 if ENVIRONMENT == "LOCALHOST":
     ALLOWED_HOSTS = ['127.0.0.1']
 else:
@@ -82,7 +82,7 @@ WSGI_APPLICATION = 'wall_e_leveling_website.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 
-if POSTGRES_SQL:
+if database_type == "postgreSQL":
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
