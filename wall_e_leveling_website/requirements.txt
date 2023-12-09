@@ -12,7 +12,7 @@ django-filter
 # needed for interacting with db
 psycopg2-binary
 
-wall-e-models==0.31
+wall-e-models==0.32
 python-dateutil
 
 django-cors-headers
