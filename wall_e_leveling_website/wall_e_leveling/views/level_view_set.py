@@ -1,9 +1,8 @@
 from rest_framework import serializers, viewsets
-from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
-from wall_e_models.models import UserPoint, Level
 
 from wall_e_leveling.views.pagination import StandardResultsSetPagination
+from wall_e_models.models import Level
 
 
 class LevelSerializer(serializers.ModelSerializer):
