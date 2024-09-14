@@ -1,5 +1,6 @@
 # wall_e_api
 
+Provides the endpoints for wall_e's [website](https://walle.sfucsss.org/)
 
  - [1. Setup Python Environment](#1-setup-python-environment)
  - [2. Setup and Run Website](#2-setup-and-run-website)
