@@ -78,10 +78,10 @@ then
 		read launch_wall_e
 	fi
 
-	echo 'basic_config__TOKEN='"'"${basic_config__TOKEN}"'" > CI/wall_e_website.env
-	echo 'basic_config__ENVIRONMENT='"'"'LOCALHOST'"'" >> CI/wall_e_website.env
-	echo 'basic_config__COMPOSE_PROJECT_NAME='"'"'discord_bot'"'" >> CI/wall_e_website.env
-	echo 'basic_config__GUILD_ID='"'"${basic_config__GUILD_ID}"'" >> CI/wall_e_website.env
+	echo 'basic_config__TOKEN='"'"${basic_config__TOKEN}"'" > CI/wall_e_api.env
+	echo 'basic_config__ENVIRONMENT='"'"'LOCALHOST'"'" >> CI/wall_e_api.env
+	echo 'basic_config__COMPOSE_PROJECT_NAME='"'"'discord_bot'"'" >> CI/wall_e_api.env
+	echo 'basic_config__GUILD_ID='"'"${basic_config__GUILD_ID}"'" >> CI/wall_e_api.env
 	if [[ "${basic_config__DOCKERIZED}" == "y" ]];
 	then
 		if [[ "${supported_os}" == "false" ]];
@@ -90,25 +90,25 @@ then
 			echo "Please feel free to add that feature in"
 		exit 1
 		fi
-		echo -e 'basic_config__DOCKERIZED='"'1'\n\n" >> CI/wall_e_website.env
+		echo -e 'basic_config__DOCKERIZED='"'1'\n\n" >> CI/wall_e_api.env
 	else
-		echo -e 'basic_config__DOCKERIZED='"'0'\n\n" >> CI/wall_e_website.env
+		echo -e 'basic_config__DOCKERIZED='"'0'\n\n" >> CI/wall_e_api.env
 	fi
 
 	export POSTGRES_PASSWORD='postgres_passwd'
-	echo 'database_config__WALL_E_DB_DBNAME='"'"'csss_discord_db'"'" >> CI/wall_e_website.env
-	echo 'database_config__WALL_E_DB_USER='"'"'wall_e'"'" >> CI/wall_e_website.env
-	echo 'database_config__WALL_E_DB_PASSWORD='"'"'wallEPassword'"'" >> CI/wall_e_website.env
-	echo 'database_config__ENABLED='"'"'1'"'" >> CI/wall_e_website.env
+	echo 'database_config__WALL_E_DB_DBNAME='"'"'csss_discord_db'"'" >> CI/wall_e_api.env
+	echo 'database_config__WALL_E_DB_USER='"'"'wall_e'"'" >> CI/wall_e_api.env
+	echo 'database_config__WALL_E_DB_PASSWORD='"'"'wallEPassword'"'" >> CI/wall_e_api.env
+	echo 'database_config__ENABLED='"'"'1'"'" >> CI/wall_e_api.env
 
 	if [[ "${basic_config__DOCKERIZED}" == "y" ]];
 	then
 		export COMPOSE_PROJECT_NAME="discord_bot"
 
-		echo 'database_config__postgresSQL='"'"'1'"'" >> CI/wall_e_website.env
-		echo -e 'database_config__HOST='"'"${COMPOSE_PROJECT_NAME}_wall_e_db"'\n\n" >> CI/wall_e_website.env
-		echo 'ORIGIN_IMAGE='"'"'sfucsssorg/wall_e'"'" >>  CI/wall_e_website.env
-		echo 'POSTGRES_PASSWORD='"'"${POSTGRES_PASSWORD}"'" >> CI/wall_e_website.env
+		echo 'database_config__postgresSQL='"'"'1'"'" >> CI/wall_e_api.env
+		echo -e 'database_config__HOST='"'"${COMPOSE_PROJECT_NAME}_wall_e_db"'\n\n" >> CI/wall_e_api.env
+		echo 'ORIGIN_IMAGE='"'"'sfucsssorg/wall_e'"'" >>  CI/wall_e_api.env
+		echo 'POSTGRES_PASSWORD='"'"${POSTGRES_PASSWORD}"'" >> CI/wall_e_api.env
 		cd wall_e
 		. ../CI/user_scripts/set_env.sh
 		../CI/user_scripts/setup-dev-env.sh
@@ -136,15 +136,15 @@ then
 
 		if [ "${sqlite3_database}" != "y" ];
 		then
-			echo 'database_config__postgresSQL='"'"'1'"'" >> CI/wall_e_website.env
-			echo 'database_config__HOST='"'"'127.0.0.1'"'" >> CI/wall_e_website.env
-			echo 'database_config__DB_PORT='"'"'5432'"'" >> CI/wall_e_website.env
+			echo 'database_config__postgresSQL='"'"'1'"'" >> CI/wall_e_api.env
+			echo 'database_config__HOST='"'"'127.0.0.1'"'" >> CI/wall_e_api.env
+			echo 'database_config__DB_PORT='"'"'5432'"'" >> CI/wall_e_api.env
 		else
-			echo 'database_config__postgresSQL='"'"'0'"'" >> CI/wall_e_website.env
-			echo 'database_config__HOST='"'"'discord_bot_wall_e_db'"'" >> CI/wall_e_website.env
+			echo 'database_config__postgresSQL='"'"'0'"'" >> CI/wall_e_api.env
+			echo 'database_config__HOST='"'"'discord_bot_wall_e_db'"'" >> CI/wall_e_api.env
 		fi
 
-		cd wall_e_leveling_website
+		cd wall_e_leveling_api
 
 		python3 -m pip install -r requirements.txt
 

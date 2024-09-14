@@ -1,0 +1,17 @@
+FROM python:3.9.13-alpine
+
+EXPOSE 8000
+
+WORKDIR /src
+
+COPY wall_e_leveling_api/wall_e_leveling wall_e_leveling
+COPY wall_e_leveling_api/wall_e_leveling_api wall_e_leveling_api
+COPY wall_e_leveling_api/manage.py manage.py
+COPY wall_e_leveling_api/requirements.txt requirements.txt
+COPY wall_e_leveling_api/startup.sh startup.sh
+COPY wall_e_leveling_api/wait-for-postgres.sh wait-for-postgres.sh
+
+RUN apk add postgresql
+
+CMD ["./wait-for-postgres.sh", "./startup.sh"]
+#CMD ["sh"]

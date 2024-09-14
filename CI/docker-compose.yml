@@ -1,13 +1,13 @@
 version: '3' #docker-compose version
-# this exists primarily because I don't yet know how to make dynamic port binding for the wall_e_leveling_website
+# this exists primarily because I don't yet know how to make dynamic port binding for the wall_e_leveling_api
 # service so right now, master can't have a working website at the same time as any branch or PR being worked on
 services:  #Services that are needed for the wall_e app
-    wall_e_leveling_website:
+    wall_e_leveling_api:
         build:
             context: ../
-            dockerfile: CI/Dockerfile.website
-        image: "${compose_project_name}_leveling_website"
-        container_name: "${COMPOSE_PROJECT_NAME}_leveling_website"
+            dockerfile: Dockerfile.api
+        image: "${compose_project_name}_leveling_api"
+        container_name: "${COMPOSE_PROJECT_NAME}_leveling_api"
         ports:
             - "8081:8000"
         environment:

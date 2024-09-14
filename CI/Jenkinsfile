@@ -37,36 +37,15 @@ export DISCORD_NOTIFICATION_MESSAGE_FILE=OUTPUT;
     }
     post {
         always {
-            script {
-                if (fileExists('OUTPUT')){
-                    summary=readFile('OUTPUT').trim()
-                    theTitle = "ISSUE DETECTED"
-                    status = false
-                }else{
-                    if (currentBuild.currentResult == "SUCCESS"){
-                        theTitle = "SUCCESS"
-                        summary = "No issues detected"
-                        status = true
-                    }else{
-                        theTitle = "ISSUE DETECTED"
-                        summary = "Please look at Jenkins for more info"
-                        status = false
-                    }
-                }
-
-                withCredentials([string(credentialsId: 'DISCORD_WEBHOOK', variable: 'WEBHOOKURL')]) {
-                    discordSend description: "Branch or PR Name: " + BRANCH_NAME + '\n' + summary, footer: env.GIT_COMMIT, link: env.BUILD_URL, successful: status, title: theTitle, webhookURL: '$WEBHOOKURL'
-                }
-            }
             cleanWs(
-            cleanWhenAborted: true,
-            cleanWhenFailure: true,
-            cleanWhenNotBuilt: false,
-            cleanWhenSuccess: true,
-            cleanWhenUnstable: true,
-            deleteDirs: true,
-            disableDeferredWipeout: true
-        )
+                cleanWhenAborted: true,
+                cleanWhenFailure: true,
+                cleanWhenNotBuilt: false,
+                cleanWhenSuccess: true,
+                cleanWhenUnstable: true,
+                deleteDirs: true,
+                disableDeferredWipeout: true
+            )
         }
     }
 }
