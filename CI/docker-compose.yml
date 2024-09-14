@@ -5,7 +5,7 @@ services:  #Services that are needed for the wall_e app
     wall_e_leveling_api:
         build:
             context: ../
-            dockerfile: Dockerfile.api
+            dockerfile: CI/Dockerfile.api
         image: "${compose_project_name}_leveling_api"
         container_name: "${COMPOSE_PROJECT_NAME}_leveling_api"
         ports:
