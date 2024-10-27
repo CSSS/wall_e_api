@@ -11,6 +11,9 @@ COPY wall_e_leveling_api/requirements.txt requirements.txt
 COPY wall_e_leveling_api/startup.sh startup.sh
 COPY wall_e_leveling_api/wait-for-postgres.sh wait-for-postgres.sh
 
+COPY .wall_e_models/wall_e_models wall_e_models
+COPY .wall_e_models/requirements.txt wall_e_models_requirements.txt
+
 RUN apk add postgresql
 
 CMD ["./wait-for-postgres.sh", "./startup.sh"]
