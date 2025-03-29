@@ -73,10 +73,13 @@ class UserPointViewSet(ViewSetMixin, generics.ListAPIView):
         query = Q(last_updated_date__gte=timestamp)
 
 
-        include_null = request.query_params.get('last_updated_date__isnull', 'unknown')
-        include_null = True \
-            if include_null == 'unknown' \
-            else include_null.lower() == 'true' if include_null else False
+        include_null = request.query_params.get('last_updated_date__isnull', '')
+        if include_null == '':
+            include_null = True
+        elif include_null == 'unknown':
+            include_null = False
+        else:
+            include_null = True if include_null.lower() == 'true' else False
         isnull_query = create_last_updated_date__isnull_query(include_null, query)
         if isnull_query:
             query = isnull_query
