@@ -48,9 +48,12 @@ class UserFilterSet(django_filters.FilterSet):
 
 def create_last_updated_date__isnull_query(include_null, query):
     if query:
-        return query | Q(last_updated_date__isnull=include_null)
+        if include_null:
+            return query | Q(last_updated_date__isnull=include_null)
     else:
-        return Q(last_updated_date__isnull=include_null)
+        if include_null:
+            return Q(last_updated_date__isnull=include_null)
+    return None
 
 
 class UserPointViewSet(ViewSetMixin, generics.ListAPIView):
@@ -74,7 +77,9 @@ class UserPointViewSet(ViewSetMixin, generics.ListAPIView):
         include_null = True \
             if include_null == 'unknown' \
             else include_null.lower() == 'true' if include_null else False
-        query = create_last_updated_date__isnull_query(include_null, query)
+        isnull_query = create_last_updated_date__isnull_query(include_null, query)
+        if isnull_query:
+            query = isnull_query
         queryset = queryset.filter(query)
 
 
