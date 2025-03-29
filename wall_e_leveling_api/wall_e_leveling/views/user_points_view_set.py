@@ -1,6 +1,10 @@
+import django_filters
 from django.db.models import Q
-from rest_framework import serializers, viewsets
+from django.utils.safestring import mark_safe
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import serializers, generics
 from rest_framework.response import Response
+from rest_framework.viewsets import ViewSetMixin
 
 from wall_e_leveling.views.pagination import StandardResultsSetPagination
 from wall_e_models.customFields import pstdatetime
@@ -35,35 +39,43 @@ class UserPointSerializer(serializers.ModelSerializer):
             'name', 'avatar', 'points', 'level_number', 'message_count', 'level_up_specific_points',
             'points_needed_to_level_up', 'last_updated_date'
         ]
+class UserFilterSet(django_filters.FilterSet):
+    class Meta:
+        model = UserPoint
+        fields = {
+            'last_updated_date' : ['gte', 'isnull']
+        }
+
+def create_last_updated_date__isnull_query(include_null, query):
+    if query:
+        return query | Q(last_updated_date__isnull=include_null)
+    else:
+        return Q(last_updated_date__isnull=include_null)
 
 
-class UserPointViewSet(viewsets.ModelViewSet):
-    serializer_class = UserPointSerializer
+class UserPointViewSet(ViewSetMixin, generics.ListAPIView):
     queryset = UserPoint.objects.all().exclude(hidden=True).order_by('-points')
+    serializer_class = UserPointSerializer
     pagination_class = StandardResultsSetPagination
-
-    def create(self, request, *args, **kwargs):
-        return Response("not yet implemented")
-
-    def update(self, request, *args, **kwargs):
-        return Response("not yet implemented")
+    filter_backends =  [DjangoFilterBackend]
+    filterset_class = UserFilterSet
 
     def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-        query = None
-        timestamp = request.query_params.get('timestamp', None)
-        include_null = request.query_params.get('include_null', None)
-        include_null = include_null.lower() == 'true' if include_null else False
-        if timestamp is not None and timestamp.isdigit():
-            timestamp = pstdatetime.from_epoch(int(timestamp))
-            query = Q(last_updated_date__gte=timestamp)
-        if  include_null:
-            if query:
-                query = query | Q(last_updated_date__isnull=True)
-            else:
-                query = Q(last_updated_date__isnull=True)
-        if query:
-            queryset = queryset.filter(query)
+        queryset = self.get_queryset()
+
+        timestamp = request.query_params.get('last_updated_date__gte', '')
+        timestamp = pstdatetime.from_epoch(int(timestamp)) \
+            if (timestamp != '' and timestamp.isdigit()) \
+            else pstdatetime.from_epoch(0)
+        query = Q(last_updated_date__gte=timestamp)
+
+
+        include_null = request.query_params.get('last_updated_date__isnull', 'unknown')
+        include_null = True \
+            if include_null == 'unknown' \
+            else include_null.lower() == 'true' if include_null else False
+        query = create_last_updated_date__isnull_query(include_null, query)
+        queryset = queryset.filter(query)
 
 
         page = self.paginate_queryset(queryset)
@@ -72,4 +84,4 @@ class UserPointViewSet(viewsets.ModelViewSet):
             return self.get_paginated_response(serializer.data)
 
         serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+        return Response(mark_safe(serializer.data))
