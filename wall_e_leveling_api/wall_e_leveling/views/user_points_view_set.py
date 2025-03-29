@@ -67,10 +67,11 @@ class UserPointViewSet(ViewSetMixin, generics.ListAPIView):
         queryset = self.get_queryset()
 
         timestamp = request.query_params.get('last_updated_date__gte', '')
-        timestamp = pstdatetime.from_epoch(int(timestamp)) \
-            if (timestamp != '' and timestamp.isdigit()) \
-            else pstdatetime.from_epoch(0)
-        query = Q(last_updated_date__gte=timestamp)
+        if (timestamp != '' and timestamp.isdigit()):
+            timestamp = pstdatetime.from_epoch(int(timestamp))
+        else:
+            timestamp = None if timestamp == 'None' else pstdatetime.from_epoch(0)
+        query = Q(last_updated_date__gte=timestamp) if timestamp else None
 
 
         include_null = request.query_params.get('last_updated_date__isnull', '')
@@ -83,7 +84,8 @@ class UserPointViewSet(ViewSetMixin, generics.ListAPIView):
         isnull_query = create_last_updated_date__isnull_query(include_null, query)
         if isnull_query:
             query = isnull_query
-        queryset = queryset.filter(query)
+        if query:
+            queryset = queryset.filter(query)
 
 
         page = self.paginate_queryset(queryset)
