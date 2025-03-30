@@ -1,8 +1,11 @@
+from collections import OrderedDict
+
 import django_filters
 from django.db.models import Q
 from django.utils.safestring import mark_safe
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import serializers, generics
+from rest_framework.exceptions import ValidationError, ErrorDetail
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSetMixin
 
@@ -46,15 +49,9 @@ class UserFilterSet(django_filters.FilterSet):
             'last_updated_date' : ['gte', 'isnull']
         }
 
-def create_last_updated_date__isnull_query(include_null, query):
-    if query:
-        if include_null:
-            return query | Q(last_updated_date__isnull=include_null)
-    else:
-        if include_null:
-            return Q(last_updated_date__isnull=include_null)
-    return None
-
+def throw_validation_error(key, error_message, code):
+    ordered_dict = OrderedDict([(key, [ErrorDetail(error_message, code=code)])])
+    raise ValidationError(ordered_dict)
 
 class UserPointViewSet(ViewSetMixin, generics.ListAPIView):
     queryset = UserPoint.objects.all().exclude(hidden=True).order_by('-points')
@@ -64,28 +61,44 @@ class UserPointViewSet(ViewSetMixin, generics.ListAPIView):
     filterset_class = UserFilterSet
 
     def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
+        queryset =self.get_queryset()
 
-        timestamp = request.query_params.get('last_updated_date__gte', '')
-        if (timestamp != '' and timestamp.isdigit()):
-            timestamp = pstdatetime.from_epoch(int(timestamp))
-        else:
-            timestamp = None if timestamp == 'None' else pstdatetime.from_epoch(0)
-        query = Q(last_updated_date__gte=timestamp) if timestamp else None
+        LAST_UPDATED_DATE__GTE = 'last_updated_date__gte'
+        LAST_UPDATED_DATE__ISNULL = 'last_updated_date__isnull'
 
-
-        include_null = request.query_params.get('last_updated_date__isnull', '')
-        if include_null == '':
-            include_null = True
-        elif include_null == 'unknown':
-            include_null = False
-        else:
-            include_null = True if include_null.lower() == 'true' else False
-        isnull_query = create_last_updated_date__isnull_query(include_null, query)
-        if isnull_query:
-            query = isnull_query
-        if query:
-            queryset = queryset.filter(query)
+        timestamp = request.query_params.get(LAST_UPDATED_DATE__GTE, 'not_specified')
+        include_null = request.query_params.get(LAST_UPDATED_DATE__ISNULL, 'not_specified').lower()
+        if not ((timestamp == 'not_specified' or timestamp == '') and (include_null == 'not_specified' or include_null == 'unknown')):
+            if timestamp == '':
+                timestamp = None
+                include_null = True if include_null == 'true' else False
+            else:
+                if timestamp.isdigit():
+                    timestamp = pstdatetime.from_epoch(int(timestamp))
+                    if include_null == 'unknown':
+                        include_null = None
+                    elif include_null == 'false':
+                        error_message = (
+                            f"invalid condition of {LAST_UPDATED_DATE__ISNULL}=False & {LAST_UPDATED_DATE__GTE}>"
+                            f"{timestamp} detected"
+                        )
+                        return throw_validation_error(LAST_UPDATED_DATE__ISNULL, error_message,1)
+                    else:
+                        include_null = True
+                else:
+                    error_message = (
+                        f"invalid epoch of {timestamp} detected"
+                    )
+                    throw_validation_error(LAST_UPDATED_DATE__ISNULL, error_message, 2)
+            query = Q(last_updated_date__gte=timestamp) if timestamp else None
+            if query:
+                if include_null is not None:
+                    query = query | Q(last_updated_date__isnull=include_null)
+            else:
+                if include_null is not None:
+                    query = Q(last_updated_date__isnull=include_null)
+            if query:
+                queryset = queryset.filter(query)
 
 
         page = self.paginate_queryset(queryset)
