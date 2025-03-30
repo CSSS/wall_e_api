@@ -79,7 +79,7 @@ class UserPointViewSet(ViewSetMixin, generics.ListAPIView):
                         include_null = None
                     elif include_null == 'false':
                         error_message = (
-                            f"invalid condition of {LAST_UPDATED_DATE__ISNULL}=False & {LAST_UPDATED_DATE__GTE}>"
+                            f"invalid condition of {LAST_UPDATED_DATE__ISNULL}=False || {LAST_UPDATED_DATE__GTE}>"
                             f"{timestamp} detected"
                         )
                         return throw_validation_error(LAST_UPDATED_DATE__ISNULL, error_message,1)
