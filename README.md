@@ -1,3 +1,5 @@
+> archiving repo as a leaderboard is no longer in the future of WALL_E apparently
+
 # wall_e_api
 
 Provides the endpoints for wall_e's [website](https://walle.sfucsss.org/)
